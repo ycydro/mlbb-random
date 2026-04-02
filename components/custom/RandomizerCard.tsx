@@ -6,10 +6,10 @@ import EmblemsSection from "./EmblemsSection";
 import BattleSpellSlot from "./BattleSpellSlot";
 import RandomizeButton from "./RandomizeButton";
 import LaneBadge from "./LaneBadge";
-import { BattleSpell, EmblemSet, Hero, Item } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { useRandomizer } from "@/app/context/RandomizerContext";
+import { useRandomizer } from "@/context/RandomizerContext";
+import { Button } from "../ui/button";
 
 interface RandomizerCardProps {
   isLoading?: boolean;
@@ -22,7 +22,7 @@ export default function RandomizerCard({
   // TODO: ENABLE RANDOMIZATION OF ALL COMPONENTS
   const { state, randomizeAll } = useRandomizer();
   return (
-    <div className="w-full max-w-lg mx-auto flex flex-col">
+    <div className="w-full max-w-lg mx-auto flex flex-col relative z-10">
       {/* Hero*/}
       <div
         className={cn(

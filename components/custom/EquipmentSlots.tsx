@@ -1,7 +1,7 @@
 "use client";
 
-import { BASE_URL, MAX_ITEM_SLOTS } from "@/app/constants";
-import { Item } from "@/app/types";
+import { BASE_URL, MAX_ITEM_SLOTS } from "@/constants";
+import { Item } from "@/types";
 import { Plus } from "lucide-react";
 
 interface EquipmentSlotsProps {

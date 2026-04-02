@@ -1,7 +1,6 @@
 import RandomizerCard from "@/components/custom/RandomizerCard";
 import { getRandomizerAssets } from "@/lib/api/randomizer-assets";
-import { EmblemSet } from "./types";
-import { RandomizerProvider } from "./context/RandomizerContext";
+import { RandomizerProvider } from "@/context/RandomizerContext";
 
 export default async function HomePage() {
   const assets = await getRandomizerAssets();

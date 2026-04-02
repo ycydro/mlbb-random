@@ -1,7 +1,7 @@
 "use client";
 
-import { BASE_URL } from "@/app/constants";
-import { BattleSpell } from "@/app/types";
+import { BASE_URL } from "@/constants";
+import { BattleSpell } from "@/types";
 import { Plus } from "lucide-react";
 
 export default function BattleSpellSlot({

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Hero, Role } from "@/app/types";
+import { Hero, Role } from "@/types";
 import { Plus } from "lucide-react";
 
 interface HeroCardProps {

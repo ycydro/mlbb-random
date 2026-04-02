@@ -20,7 +20,7 @@ import {
   Lane,
   LANES,
   Role,
-} from "../types";
+} from "@/types";
 import { MAX_ITEM_SLOTS } from "../constants";
 
 export interface RandomizerState {

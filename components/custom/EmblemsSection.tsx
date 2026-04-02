@@ -1,7 +1,7 @@
 "use client";
 
-import { BASE_URL } from "@/app/constants";
-import { EmblemSet, EmblemTalent, FinalEmblemSet } from "@/app/types";
+import { BASE_URL } from "@/constants";
+import { EmblemSet, EmblemTalent, FinalEmblemSet } from "@/types";
 import { Plus, ChevronRight } from "lucide-react";
 
 interface EmblemsSectionProps {
