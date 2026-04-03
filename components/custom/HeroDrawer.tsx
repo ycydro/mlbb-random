@@ -14,6 +14,12 @@ import { Hero } from "@/types";
 import { useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import FilterPanel from "./FilterPanel";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 interface HeroDrawerProps {
   heroes: Hero[];
@@ -55,18 +61,27 @@ export function HeroDrawer({
           <Input
             id="input-demo-api-key"
             className="mt-1"
-            placeholder="e.g Suyou"
+            placeholder="Search for MLBB Hero names..."
             onChange={(e) => setSearch(e.target.value)}
           />
-          <FilterPanel />
-          <div className="flex items-center gap-2 border-b border-border/40">
-            <h2 className="text-[11px] font-black tracking-[0.25em] uppercase text-foreground/70">
-              Hero List
-            </h2>
-            <span className="ml-auto text-[10px] text-foreground tracking-wider uppercase">
-              {filteredHeroes.length} heroes
-            </span>
-          </div>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem
+              value="filters"
+              className="border-b border-border/40"
+            >
+              <AccordionTrigger className="py-2 text-left">
+                <div className="flex w-full items-center gap-2">
+                  <h2 className="text-[11px] font-black tracking-[0.25em] uppercase text-foreground/70">
+                    Hero Filters
+                  </h2>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <FilterPanel />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
           <div className="flex flex-wrap justify-evenly gap-y-4">
             {filteredHeroes.map((hero) => (
               <button

@@ -72,7 +72,7 @@ export default function LaneBadge({}: LaneBadgeProps) {
               lane ? `Lane: ${lane}. Click to change.` : "Select a lane"
             }
             className={[
-              "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer hover:opacity-80",
+              "inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer hover:opacity-80",
               colorClasses,
               isLocked ? `ring-1 ${lockedRing}` : "",
             ].join(" ")}

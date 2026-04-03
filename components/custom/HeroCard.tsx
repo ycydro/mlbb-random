@@ -129,7 +129,7 @@ export default function HeroCard({ onImageClick }: HeroCardProps) {
           size="sm"
           asChild
           onClick={handleClick}
-          className="h-fit tracking-wide truncate text-foreground text-2xl font-bold p-0 hover:bg-transparent hover:text-accent-foreground group cursor-pointer"
+          className="h-fit tracking-wide truncate text-foreground text-md sm:text-2xl font-bold p-0 hover:bg-transparent hover:text-accent-foreground group cursor-pointer"
         >
           <div className="max-w-fit flex items-center gap-1.5">
             {!hero ? (
@@ -137,7 +137,7 @@ export default function HeroCard({ onImageClick }: HeroCardProps) {
             ) : (
               hero.name
             )}
-            <PenBox className="size-5 text-muted-foreground group-hover:text-accent-foreground transition-colors duration-300 cursor-pointer" />
+            <PenBox className="size-4 sm:size-5 text-muted-foreground group-hover:text-accent-foreground transition-colors duration-300 cursor-pointer" />
           </div>
         </Button>
 
