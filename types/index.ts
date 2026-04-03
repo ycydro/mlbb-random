@@ -41,7 +41,7 @@ export const SPECIALTIES = [
 
 export type Specialty = (typeof SPECIALTIES)[number];
 
-export const DAMAGE_TYPES = ["Physical", "Magic"] as const;
+export const DAMAGE_TYPES = ["Physical", "Magic", "Mixed"] as const;
 export type DamageType = (typeof DAMAGE_TYPES)[number];
 
 export interface BattleSpell {
