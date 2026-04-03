@@ -5,6 +5,7 @@
 :root {
   --background: oklch(0.4834 0.0648 256.0452);
   --foreground: oklch(0.8302 0.0473 252.3823);
+  --darker-background: oklch(20.8% 0.042 265.755);
   --card: oklch(0.4207 0.0638 257.9957);
   --card-foreground: oklch(0.8302 0.0473 252.3823);
   --popover: oklch(0.4816 0.1053 260.544);
@@ -63,6 +64,7 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-darker-background: var(--darker-background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
