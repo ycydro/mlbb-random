@@ -248,24 +248,51 @@ export function RandomizerProvider({
     },
     [heroes],
   );
-
   const selectLane = useCallback(
     (lane: Lane | null) => {
-      if (selected.battleSpell?.name === "Retribution") {
-        toast.error("Please remove Retribution as Battle Spell first.");
-        return;
+      if (selected.lane === lane) return;
+
+      // if (selected.battleSpell?.name === "Retribution") {
+      //   toast.error("Please remove Retribution as Battle Spell first.");
+      //   return;
+      // }
+
+      if (lane === "Jungle") {
+        const retribution = battleSpells.find(
+          (spell) => spell.name === "Retribution",
+        );
+        if (retribution) {
+          setSelected((prev) => ({ ...prev, lane, battleSpell: retribution }));
+          return;
+        }
       }
+
       setSelected((prev) => ({ ...prev, lane }));
     },
-    [selected.battleSpell],
+    [selected.lane, selected.battleSpell, battleSpells],
   );
 
-  const selectBattleSpell = useCallback((battleSpell: BattleSpell | null) => {
-    if (battleSpell?.name === "Retribution") {
-      selectLane("Jungle");
-    }
-    setSelected((prev) => ({ ...prev, battleSpell }));
-  }, []);
+  const selectBattleSpell = useCallback(
+    (battleSpell: BattleSpell | null) => {
+      if (selected.battleSpell?.name === battleSpell?.name) return;
+
+      if (
+        selected.battleSpell?.name === "Retribution" &&
+        selected.lane === "Jungle"
+      ) {
+        toast.error("Please remove Jungle as your selected lane first.");
+        return;
+      }
+
+      // if (battleSpell?.name === "Retribution") {
+      //   setSelected((prev) => ({ ...prev, battleSpell, lane: "Jungle" }));
+      //   return;
+      // }
+
+      setSelected((prev) => ({ ...prev, battleSpell }));
+    },
+    [selected.battleSpell, selected.lane],
+  );
 
   const resetHero = useCallback(() => {
     setSelected((prev) => ({ ...prev, hero: null }));
@@ -273,19 +300,18 @@ export function RandomizerProvider({
   }, []);
 
   const resetLane = useCallback(() => {
-    if (selected.battleSpell?.name === "Retribution") {
-      toast.error("Please remove Retribution as Battle Spell first.");
-      return;
-    }
-
     setSelected((prev) => ({ ...prev, lane: null }));
     setState((prev) => ({ ...prev, lane: null }));
   }, [selected.lane, selected.battleSpell]);
 
   const resetBattleSpell = useCallback(() => {
+    if (selected.lane === "Jungle") {
+      toast.error("Please remove Jungle as your selected lane first.");
+      return;
+    }
     setSelected((prev) => ({ ...prev, battleSpell: null }));
     setState((prev) => ({ ...prev, battleSpell: null }));
-  }, []);
+  }, [selected.lane]);
 
   const resetAll = useCallback(() => {
     setSelected(iniitalSelection);
