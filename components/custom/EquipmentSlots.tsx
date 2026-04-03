@@ -22,10 +22,12 @@ export default function EquipmentSlots({ items = [] }: EquipmentSlotsProps) {
         Equipment
       </h2>
 
-      <div className="flex justify-center flex-wrap gap-1 sm:gap-3">
-        {slots.map((slot, index) => (
-          <EquipmentSlot key={index} slot={slot} />
-        ))}
+      <div className="w-full flex items-center justify-center">
+        <div className="grid grid-cols-3 grid-rows-2 place-items-center gap-1.5 sm:flex sm:justify-center sm:flex-wrap sm:gap-3">
+          {slots.map((slot, index) => (
+            <EquipmentSlot key={index} slot={slot} />
+          ))}
+        </div>
       </div>
     </section>
   );
