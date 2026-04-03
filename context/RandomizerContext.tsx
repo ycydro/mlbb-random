@@ -22,6 +22,7 @@ import {
   Role,
 } from "@/types";
 import { MAX_ITEM_SLOTS } from "../constants";
+import { toast } from "sonner";
 
 export interface RandomizerState {
   hero: Hero | null;
@@ -35,11 +36,38 @@ export interface RandomizerState {
 
 interface RandomizerContextValue {
   state: RandomizerState;
+  selected: Selected;
+  setSelected: React.Dispatch<React.SetStateAction<Selected>>;
+  heroPool: Hero[];
+  allBattleSpells: BattleSpell[];
+  filters: Filters;
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  selectHero: (heroID: Hero["heroid"]) => void;
+  selectLane: (lane: Lane | null) => void;
+  selectBattleSpell: (battleSpell: BattleSpell | null) => void;
+  resetHero: () => void;
+  resetLane: () => void;
+  resetBattleSpell: () => void;
+  resetAll: () => void;
+  resetState: () => void;
   randomizeHero: () => void;
   randomizeItems: () => void;
   randomizeEmblems: () => FinalEmblemSet;
   randomizeBattleSpell: () => BattleSpell;
   randomizeAll: () => void;
+}
+
+interface Filters {
+  lanes?: Lane[];
+  roles?: Role[];
+  damageType?: DamageType[];
+}
+
+interface Selected {
+  hero?: Hero | null;
+  lane?: Lane | null;
+  role?: Role | null;
+  battleSpell?: BattleSpell | null;
 }
 
 const RandomizerContext = createContext<RandomizerContextValue | null>(null);
@@ -62,6 +90,13 @@ const initialState: RandomizerState = {
   damageType: null,
 };
 
+const iniitalSelection: Selected = {
+  hero: null,
+  role: null,
+  lane: null,
+  battleSpell: null,
+};
+
 export function RandomizerProvider({
   children,
   heroes,
@@ -70,6 +105,8 @@ export function RandomizerProvider({
   battleSpells,
 }: RandomizerProviderProps) {
   const [state, setState] = useState<RandomizerState>(initialState);
+  const [selected, setSelected] = useState<Selected>(iniitalSelection);
+  const [filters, setFilters] = useState<Filters>({});
 
   // memoized so they don't recompute on every render
   const { mainEmblems, tierOneTalents, tierTwoTalents, coreTalents } = useMemo(
@@ -81,6 +118,33 @@ export function RandomizerProvider({
     }),
     [emblems],
   );
+
+  const filterHero = useCallback(
+    (hero: Hero): boolean => {
+      const laneMatch =
+        !filters.lanes?.length ||
+        (hero.lanes ?? []).some((lane) => filters.lanes!.includes(lane));
+
+      const roleMatch =
+        !filters.roles?.length ||
+        (hero.roles ?? []).some((role) => filters.roles!.includes(role));
+
+      const damageType = hero["damage-type"] ?? null;
+      const damageTypeMatch =
+        !filters.damageType?.length ||
+        (damageType !== null && filters.damageType!.includes(damageType));
+
+      return laneMatch && roleMatch && damageTypeMatch;
+    },
+    [filters],
+  );
+
+  const filteredHeroes = useMemo(
+    () => heroes.filter(filterHero),
+    [heroes, filterHero, filters],
+  );
+
+  const heroPool = filteredHeroes.length > 0 ? filteredHeroes : heroes;
 
   // helpers
   const determineItemCategories = useCallback(
@@ -98,7 +162,14 @@ export function RandomizerProvider({
         categories.push("Defense");
       }
 
-      categories.push(damageType === "Physical" ? "Physical Attack" : "Magic");
+      if (damageType === "Physical") {
+        categories.push("Physical Attack");
+      } else if (damageType === "Magic") {
+        categories.push("Magic");
+      } else {
+        categories.push("Physical Attack");
+        categories.push("Magic");
+      }
 
       return categories;
     },
@@ -161,15 +232,80 @@ export function RandomizerProvider({
     [battleSpells],
   );
 
+  // selects
+  const selectHero = useCallback(
+    (heroID: Hero["heroid"]) => {
+      const hero = heroes.find((h) => h.heroid === heroID) ?? null;
+
+      setSelected({ ...iniitalSelection, hero });
+
+      // setState({
+      //   ...initialState,
+      //   hero,
+      //   damageType: hero?.["damage-type"] ?? null,
+      //   // items: buildItemList(hero),
+      // });
+    },
+    [heroes],
+  );
+
+  const selectLane = useCallback(
+    (lane: Lane | null) => {
+      if (selected.battleSpell?.name === "Retribution") {
+        toast.error("Please remove Retribution as Battle Spell first.");
+        return;
+      }
+      setSelected((prev) => ({ ...prev, lane }));
+    },
+    [selected.battleSpell],
+  );
+
+  const selectBattleSpell = useCallback((battleSpell: BattleSpell | null) => {
+    if (battleSpell?.name === "Retribution") {
+      selectLane("Jungle");
+    }
+    setSelected((prev) => ({ ...prev, battleSpell }));
+  }, []);
+
+  const resetHero = useCallback(() => {
+    setSelected((prev) => ({ ...prev, hero: null }));
+    setState((prev) => ({ ...prev, hero: null, damageType: null }));
+  }, []);
+
+  const resetLane = useCallback(() => {
+    if (selected.battleSpell?.name === "Retribution") {
+      toast.error("Please remove Retribution as Battle Spell first.");
+      return;
+    }
+
+    setSelected((prev) => ({ ...prev, lane: null }));
+    setState((prev) => ({ ...prev, lane: null }));
+  }, [selected.lane, selected.battleSpell]);
+
+  const resetBattleSpell = useCallback(() => {
+    setSelected((prev) => ({ ...prev, battleSpell: null }));
+    setState((prev) => ({ ...prev, battleSpell: null }));
+  }, []);
+
+  const resetAll = useCallback(() => {
+    setSelected(iniitalSelection);
+    setState(initialState);
+  }, []);
+
   // exposed
+  const resetState = useCallback(() => {
+    setState(initialState);
+    setFilters({});
+  }, []);
+
   const randomizeHero = useCallback(() => {
-    const hero = heroes[getRandomIndex(heroes.length)];
+    const hero = heroPool[getRandomIndex(heroPool.length)];
     setState((prev) => ({
       ...prev,
       hero,
       damageType: hero["damage-type"] ?? null,
     }));
-  }, [heroes]);
+  }, [heroPool]);
 
   const randomizeItems = useCallback(() => {
     setState((prev) => ({
@@ -191,23 +327,55 @@ export function RandomizerProvider({
   }, [buildBattleSpell, state.lane]);
 
   const randomizeAll = useCallback(() => {
-    const hero = heroes[getRandomIndex(heroes.length)];
-    const lane = LANES[getRandomIndex(LANES.length)];
-
+    if (heroPool.length === 0) return;
+    const hero = selected.hero ?? heroPool[getRandomIndex(heroPool.length)];
+    const lane = selected.lane ?? LANES[getRandomIndex(LANES.length)];
+    const battleSpell = selected.battleSpell ?? buildBattleSpell(lane);
+    let items: Item[] = [];
+    try {
+      items = buildItemList(hero);
+    } catch {}
     setState({
       hero,
       damageType: hero["damage-type"] ?? null,
       lane,
       role: null,
-      items: buildItemList(hero),
+      items,
       emblemSet: buildEmblemSet(),
-      battleSpell: buildBattleSpell(lane),
+      battleSpell,
     });
-  }, [heroes, buildItemList, buildEmblemSet, buildBattleSpell]);
+  }, [
+    selected.hero,
+    selected.lane,
+    selected.battleSpell,
+    heroPool,
+    buildItemList,
+    buildEmblemSet,
+    buildBattleSpell,
+  ]);
 
   const value = useMemo<RandomizerContextValue>(
     () => ({
       state,
+      resetState,
+      // SELECTED
+      selected,
+      setSelected,
+      // HEROES
+      heroPool,
+      // FILTERS
+      filters,
+      setFilters,
+      // SELECTS
+      selectHero,
+      selectLane,
+      selectBattleSpell,
+      resetHero,
+      resetLane,
+      resetBattleSpell,
+      resetAll,
+      allBattleSpells: battleSpells,
+      // RANDOMIZERS
       randomizeHero,
       randomizeItems,
       randomizeEmblems,
@@ -216,6 +384,16 @@ export function RandomizerProvider({
     }),
     [
       state,
+      selected,
+      heroPool,
+      filters,
+      selectHero,
+      selectLane,
+      selectBattleSpell,
+      resetHero,
+      resetLane,
+      resetBattleSpell,
+      resetAll,
       randomizeHero,
       randomizeItems,
       randomizeEmblems,
