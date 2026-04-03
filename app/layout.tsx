@@ -45,8 +45,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/bleh.png",
-        width: 236,
-        height: 236,
+        width: 48,
+        height: 48,
         alt: "MLBB Randomizer – Generate Your Random Loadout",
       },
     ],
