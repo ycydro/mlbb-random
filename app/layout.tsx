@@ -27,7 +27,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} antialiased overscroll-none`}
     >
-      <body className="min-h-screen flex flex-col justify-center overflow-hidden">
+      <body className="min-h-screen flex flex-col justify-center">
         {children}
       </body>
     </html>

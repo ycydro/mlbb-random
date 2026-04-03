@@ -1,6 +1,7 @@
 import RandomizerCard from "@/components/custom/RandomizerCard";
 import { getRandomizerAssets } from "@/lib/api/randomizer-assets";
 import { RandomizerProvider } from "@/context/RandomizerContext";
+import Image from "next/image";
 
 export default async function HomePage() {
   const assets = await getRandomizerAssets();
@@ -21,21 +22,28 @@ export default async function HomePage() {
         id="main-content"
         className="min-h-screen overscroll-none justify-center w-full bg-slate-800 flex flex-col items-center overflow-hidden"
       >
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-0"
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(30,64,175,0.25),transparent)]" />
-          <div
-            className="absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle, #60a5fa 1px, transparent 1px)",
-              backgroundSize: "28px 28px",
-            }}
+        {/* TITLE */}
+        <div className="text-center space-x-1.5 flex w-fit justify-center items-center">
+          <div>
+            <p className="text-xs font-bold text-accent-foreground/80 tracking-[0.3em] uppercase">
+              Mobile Legends: Bang Bang
+            </p>
+            <h1
+              aria-hidden="true"
+              className="text-3xl font-black text-white tracking-tight leading-none"
+            >
+              <span className="text-amber-400 ">Randomizer</span>
+            </h1>
+          </div>
+          <Image
+            src="/bleh.png"
+            alt="logo"
+            width={111}
+            height={111}
+            preload={true}
           />
         </div>
-        <div className="relative z-10 w-full max-w-lg px-4 pt-10 pb-16 flex flex-col gap-6">
+        <div className="relative z-10 w-full max-w-lg px-4 pt-3 pb-16 flex flex-col gap-6">
           <RandomizerProvider
             heroes={assets.heroes}
             emblems={assets.emblems}
