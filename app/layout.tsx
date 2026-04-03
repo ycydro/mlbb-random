@@ -14,9 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "MLBB Randomizer",
-  },
+  title: "MLBB Randomizer",
   description:
     "Generate a complete random Mobile Legends: Bang Bang loadout — hero, item build, lane, role, emblem setup, and battle spell. Free MLBB randomizer tool.",
   keywords: [
